@@ -1,0 +1,9 @@
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+
+# Dépendances / build (au cas où)
+node_modules/
+.vercel/
