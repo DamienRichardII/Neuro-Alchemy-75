@@ -147,6 +147,11 @@ section{padding:74px 0}
 .hero-visual svg{width:100%;max-width:460px;height:auto;filter:drop-shadow(0 24px 50px rgba(18,50,74,.16))}
 .hero-logo{width:100%;max-width:420px;border-radius:50%;box-shadow:0 24px 60px rgba(18,50,74,.20)}
 .about-visual .hero-logo{max-width:360px}
+/* Hero sans visuel (ex : page FAQ) — contenu centré */
+.hero-solo .container{grid-template-columns:1fr}
+.hero-solo .hero-text{max-width:780px;margin:0 auto;text-align:center}
+.hero-solo .hero-text .badges,.hero-solo .hero-ctas{justify-content:center}
+.hero-solo .hero-text p.lead{margin-left:auto;margin-right:auto}
 
 /* =========================================================
    CARTES
@@ -394,6 +399,31 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
 .mb-40{margin-bottom:40px}
 
 /* =========================================================
+   FAQ PAGE — bloc comparatif
+   ========================================================= */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.compare .card{position:relative}
+.compare .card.muted{background:#f6f7f8;border-color:#e4e7ea}
+.compare .card.highlight{border-color:#e7d3f5;box-shadow:0 16px 40px rgba(123,75,179,.12)}
+.compare .card h3{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.compare-list{display:flex;flex-direction:column;gap:12px}
+.compare-list li{display:flex;gap:11px;align-items:flex-start;font-size:.96rem;color:#3c4a54}
+.compare-list li svg{flex:0 0 20px;width:20px;height:20px;margin-top:2px}
+.compare .cross li svg{color:#c46a6a}
+.compare .check li svg{color:#4fa86a}
+.compare-note{margin-top:26px;text-align:center;font-size:1.02rem;color:var(--bleu-profond);max-width:760px;margin-left:auto;margin-right:auto}
+
+/* =========================================================
+   FAQ PAGE — grille vidéos 16:9
+   ========================================================= */
+.video-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.video-card{background:#fff;border:var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden;transition:transform .25s,box-shadow .25s}
+.video-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover)}
+.video-embed{position:relative;width:100%;aspect-ratio:16/9;background:#0d1b26}
+.video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-card .video-title{padding:15px 20px;font-weight:600;color:var(--bleu-profond);font-size:.98rem}
+
+/* =========================================================
    RESPONSIVE — TABLETTE
    ========================================================= */
 @media (max-width:1024px){
@@ -430,6 +460,7 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .needs-grid{grid-template-columns:repeat(2,1fr)}
   .steps{grid-template-columns:1fr}
+  .compare,.video-grid{grid-template-columns:1fr}
 
   .cert-grid{grid-template-columns:repeat(2,1fr)}
 
