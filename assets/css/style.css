@@ -191,6 +191,7 @@ section{padding:74px 0}
    ========================================================= */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
 .split .visual svg{width:100%;max-width:420px;margin:0 auto;filter:drop-shadow(0 18px 40px rgba(47,134,176,.18))}
+.approche-img{width:100%;max-width:460px;margin:0 auto;border-radius:var(--radius);box-shadow:0 20px 50px rgba(18,50,74,.22)}
 
 /* =========================================================
    BESOINS (grille icônes)
@@ -399,6 +400,51 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
 .mb-40{margin-bottom:40px}
 
 /* =========================================================
+   ENCART TARIF NEUROFEEDBACK
+   ========================================================= */
+.pricing-card{max-width:640px;margin:0 auto;background:#fff;border:var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px}
+.pricing-head{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.pricing-head h3{margin:0;font-size:1.25rem}
+.pricing-head p{color:var(--gris);font-size:.92rem;margin:2px 0 0}
+.pricing-list{display:flex;flex-direction:column;gap:0;margin-bottom:24px}
+.pricing-list li{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid #eef0f2;font-size:.98rem;color:#3c4a54}
+.pricing-list li:last-child{border-bottom:none}
+.pricing-list li strong{color:var(--bleu-profond);text-align:right}
+.pricing-card .btn{width:100%}
+.pricing-note{max-width:640px;margin:16px auto 0;font-size:.86rem;color:var(--gris);text-align:center}
+.pricing-inline{background:var(--bleu-clair);border-radius:var(--radius-sm);padding:16px 20px;margin:16px 0 20px}
+.pricing-inline p{margin:0;color:var(--bleu-profond);font-size:.94rem}
+.pricing-inline p+p{margin-top:6px;color:#3c4a54}
+.pricing-inline strong{color:var(--rose-fonce)}
+
+/* =========================================================
+   RÉSERVATION — layout + calendrier
+   ========================================================= */
+.resa-layout{display:grid;grid-template-columns:330px 1fr;gap:32px;align-items:start}
+.resa-layout .reservation-card{max-width:none;margin:0}
+.resa-aside{position:sticky;top:96px}
+.cal-label{font-weight:700;color:var(--bleu-profond);margin:0 0 12px;font-size:.98rem}
+#slotsWrap{margin-top:20px}
+.calendar{background:#fff;border:var(--border);border-radius:var(--radius-sm);padding:18px;box-shadow:var(--shadow-sm)}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-head button{width:38px;height:38px;border-radius:50%;border:1px solid #e0e4e8;color:var(--bleu-profond);display:flex;align-items:center;justify-content:center;transition:.15s}
+.cal-head button:hover{background:var(--bleu-clair);border-color:var(--bleu-clair)}
+.cal-title{font-weight:700;color:var(--bleu-profond);text-transform:capitalize;font-size:1.02rem}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-grid .dow{text-align:center;font-size:.7rem;color:var(--gris);text-transform:uppercase;letter-spacing:.03em;padding:4px 0;font-weight:600}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:.9rem;border:1.5px solid transparent;color:#aeb6bd;background:transparent;font-family:inherit}
+.cal-day.available{background:var(--bleu-clair);color:var(--bleu-profond);font-weight:600;cursor:pointer}
+.cal-day.available:hover{background:#c7e9f4}
+.cal-day.selected{background:var(--rose);color:#fff;border-color:var(--rose)}
+.cal-day.disabled{background:transparent;color:#cfd5da;cursor:not-allowed}
+.cal-day.empty{background:transparent}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.slot-btn{padding:12px 6px;border-radius:12px;border:1.5px solid #dde2e6;background:#fff;font-size:.88rem;font-weight:600;color:var(--bleu-profond);cursor:pointer;transition:.15s;font-family:inherit}
+.slot-btn:hover{border-color:var(--violet);color:var(--violet)}
+.slot-btn.selected{background:var(--bleu-profond);color:#fff;border-color:var(--bleu-profond)}
+.resa-summary{background:var(--vert-sauge);border-radius:12px;padding:14px 18px;font-size:.92rem;color:var(--bleu-profond);margin:20px 0;display:flex;flex-direction:column;gap:4px}
+
+/* =========================================================
    FAQ PAGE — bloc comparatif
    ========================================================= */
 .compare{display:grid;grid-template-columns:1fr 1fr;gap:24px}
@@ -422,6 +468,8 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
 .video-embed{position:relative;width:100%;aspect-ratio:16/9;background:#0d1b26}
 .video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .video-card .video-title{padding:15px 20px;font-weight:600;color:var(--bleu-profond);font-size:.98rem}
+.video-grid-3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:1024px){.video-grid-3{grid-template-columns:repeat(2,1fr)}}
 
 /* =========================================================
    RESPONSIVE — TABLETTE
@@ -471,6 +519,11 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
   .parcours{grid-template-columns:1fr}
   .form-grid{grid-template-columns:1fr}
   .reservation-card{padding:24px}
+  .resa-layout{grid-template-columns:1fr;gap:24px}
+  .resa-aside{position:static}
+  .slots{grid-template-columns:repeat(2,1fr)}
+  .calendar{padding:14px}
+  .cal-grid{gap:4px}
 
   .cat-card,.method-detail{grid-template-columns:1fr;text-align:center}
   .cat-card .tags{justify-content:center}
