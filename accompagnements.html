@@ -8,7 +8,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="assets/img/logo-neuroalchemy.jpeg">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="NeuroAlchemy — Accompagnement &amp; Transformation Neuro-Émotionnelle">
+<meta property="og:description" content="Neurofeedback Dynamique, EMDR-DSA, Hypnose Ericksonienne et Auriculothérapie laser à Paris.">
+<meta property="og:image" content="https://neuro-alchemy-75.vercel.app/assets/og-image.png">
+<meta property="og:url" content="https://neuro-alchemy-75.vercel.app/accompagnements.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NeuroAlchemy — Accompagnement &amp; Transformation Neuro-Émotionnelle">
+<meta name="twitter:description" content="Accompagnement neuro-émotionnel à Paris : Neurofeedback Dynamique, EMDR-DSA, Hypnose Ericksonienne et Auriculothérapie laser.">
+<meta name="twitter:image" content="https://neuro-alchemy-75.vercel.app/assets/twitter-card.png">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -16,8 +27,8 @@
 <header class="site-header">
   <div class="container nav">
     <a href="index.html" class="brand">
-      <img src="assets/img/logo-neuroalchemy.jpeg" alt="Logo NeuroAlchemy">
-      <span>NeuroAlchemy<small>Transformation neuro-émotionnelle</small></span>
+      <img src="assets/img/logo-neuroalchemy.png" alt="Logo NeuroAlchemy">
+      <span>NeuroAlchemy<small>Accompagnement &amp; transformation neuro-émotionnelle</small></span>
     </a>
     <nav class="nav-links">
       <a href="index.html">Accueil</a>
@@ -25,6 +36,7 @@
       <a href="methodes.html">Méthodes</a>
       <a href="a-propos.html">À propos</a>
       <a href="faq.html">FAQ</a>
+      <a href="tarifs.html">Tarifs</a>
       <a href="reservation.html">Réservation</a>
       <a href="contact.html">Contact</a>
     </nav>
@@ -40,6 +52,7 @@
   <a href="methodes.html">Méthodes</a>
   <a href="a-propos.html">À propos</a>
   <a href="faq.html">FAQ</a>
+  <a href="tarifs.html">Tarifs</a>
   <a href="reservation.html">Réservation</a>
   <a href="contact.html">Contact</a>
   <a href="reservation.html" class="btn btn-rose btn-block">Réserver une séance</a>
@@ -68,6 +81,7 @@
           <h3>Addictions</h3>
           <p>Un accompagnement doux pour soutenir le sevrage et apaiser les automatismes liés aux dépendances. L’approche aide à retrouver de la liberté face aux comportements installés.</p>
           <div class="tags"><span>Tabac</span><span>Vapoteuse</span><span>Sucre</span><span>Cannabis</span><span>Comportements compulsifs</span></div>
+          <p class="cat-price"><strong>Auriculothérapie laser — 130 €</strong><span class="suivi">Une séance de suivi est offerte dans les 12 mois suivant un accompagnement auriculaire laser Addictions.</span></p>
         </div>
       </article>
       <article class="cat-card" data-reveal>
@@ -76,6 +90,7 @@
           <h3>Stress &amp; anxiété</h3>
           <p>Favoriser le retour au calme et soutenir la régulation du système nerveux. L’objectif est d’aider le corps et l’esprit à retrouver davantage de stabilité au quotidien.</p>
           <div class="tags"><span>Stress</span><span>Anxiété</span><span>Tensions</span></div>
+          <p class="cat-price"><strong>Bien-être global — 80 €</strong></p>
         </div>
       </article>
       <article class="cat-card" data-reveal>
@@ -84,6 +99,7 @@
           <h3>Sommeil</h3>
           <p>Un accompagnement pour soutenir un sommeil plus apaisé et favoriser un meilleur endormissement, en aidant le système nerveux à retrouver son équilibre.</p>
           <div class="tags"><span>Endormissement</span><span>Sommeil agité</span><span>Récupération</span></div>
+          <p class="cat-price"><strong>Bien-être global — 80 €</strong></p>
         </div>
       </article>
       <article class="cat-card" data-reveal>
@@ -92,6 +108,7 @@
           <h3>Poids &amp; alimentation</h3>
           <p>Soutenir une relation plus sereine à l’alimentation et accompagner les changements de comportement, dans une démarche douce et progressive.</p>
           <div class="tags"><span>Perte de poids</span><span>Compulsions</span><span>Équilibre</span></div>
+          <p class="cat-price"><strong>Selon la méthode :</strong> Neurofeedback NeurOptimal® 70 € · Hypnose Ericksonienne 80 €</p>
         </div>
       </article>
       <article class="cat-card" data-reveal>
@@ -100,6 +117,7 @@
           <h3>Douleurs, migraines, acouphènes</h3>
           <p>Une approche complémentaire pour accompagner les douleurs persistantes, les migraines et les acouphènes, en soutien d’un suivi médical.</p>
           <div class="tags"><span>Douleurs chroniques</span><span>Migraines</span><span>Acouphènes</span></div>
+          <p class="cat-price"><strong>Selon la méthode choisie</strong> — précisée lors du premier échange.</p>
         </div>
       </article>
       <article class="cat-card" data-reveal>
@@ -108,13 +126,17 @@
           <h3>Ménopause &amp; système endocrinien</h3>
           <p>Accompagner les périodes de transition hormonale et soutenir l’équilibre global du corps, avec douceur et écoute.</p>
           <div class="tags"><span>Ménopause</span><span>Système endocrinien</span><span>Équilibre</span></div>
+          <p class="cat-price"><strong>Bien-être global — 80 €</strong></p>
         </div>
       </article>
     </div>
     <div class="cta-band" style="margin-top:48px" data-reveal>
       <h2>Un besoin particulier ?</h2>
       <p>Réservez un créneau pour en parler ensemble et définir l’accompagnement le plus adapté.</p>
-      <a href="reservation.html" class="btn btn-rose">Réserver une séance</a>
+      <div class="hero-ctas" style="justify-content:center">
+        <a href="reservation.html" class="btn btn-rose">Réserver une séance</a>
+        <a href="tarifs.html" class="btn btn-light">Voir tous les tarifs</a>
+      </div>
     </div>
   </div>
 </section>
@@ -123,8 +145,8 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <div class="footer-brand"><img src="assets/img/logo-neuroalchemy.jpeg" alt="Logo NeuroAlchemy"> NeuroAlchemy</div>
-        <p class="sig">Reprogrammation &amp; Transformation Neuro-Émotionnelle — Paris.</p>
+        <div class="footer-brand"><img src="assets/img/logo-neuroalchemy.png" alt="Logo NeuroAlchemy"> NeuroAlchemy</div>
+        <p class="sig">Accompagnement &amp; Transformation Neuro-Émotionnelle — Paris.</p>
       </div>
       <div>
         <h4>Navigation</h4>
@@ -134,6 +156,7 @@
           <li><a href="methodes.html">Méthodes</a></li>
           <li><a href="a-propos.html">À propos</a></li>
           <li><a href="faq.html">FAQ</a></li>
+          <li><a href="tarifs.html">Tarifs</a></li>
           <li><a href="reservation.html">Réservation</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>

@@ -371,6 +371,9 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
 .cat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover)}
 .cat-card .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .cat-card .tags span{background:var(--bleu-clair);color:var(--bleu-profond);border-radius:50px;padding:5px 13px;font-size:.8rem;font-weight:600}
+.cat-price{margin-top:14px;font-size:.92rem;color:var(--bleu-profond)}
+.cat-price strong{color:var(--rose-fonce)}
+.cat-price .suivi{display:block;margin-top:4px;font-size:.85rem;color:var(--gris)}
 
 /* Méthode détaillée */
 .method-detail{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:start;background:#fff;border:var(--border);border-radius:var(--radius);padding:34px;box-shadow:var(--shadow-sm)}
@@ -398,6 +401,23 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
 .mt-0{margin-top:0}
 .center{text-align:center}
 .mb-40{margin-bottom:40px}
+
+/* =========================================================
+   PAGE TARIFS
+   ========================================================= */
+.tarif-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.tarif-card{background:#fff;border:var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:30px;text-align:center;transition:transform .25s ease,box-shadow .25s ease;display:flex;flex-direction:column}
+.tarif-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-hover)}
+.tarif-card .tarif-badge{align-self:center;display:inline-block;background:var(--bleu-clair);color:var(--bleu-profond);border-radius:50px;padding:5px 14px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px}
+.tarif-card:nth-child(3n) .tarif-badge{background:var(--vert-sauge)}
+.tarif-card:nth-child(3n+1) .tarif-badge{background:#f3e7fb;color:var(--violet)}
+.tarif-card h3{font-size:1.2rem;margin-bottom:6px}
+.tarif-card .tarif-price{font-family:var(--ff-serif);font-size:2.4rem;font-weight:700;color:var(--rose);margin:6px 0 10px}
+.tarif-card .tarif-price small{font-size:1rem;color:var(--gris);font-family:var(--ff-sans);font-weight:500}
+.tarif-card p{color:var(--gris);font-size:.94rem;margin-top:auto}
+.tarif-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:40px}
+.pay-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.pay-tags span{background:var(--bleu-clair);color:var(--bleu-profond);border-radius:50px;padding:5px 13px;font-size:.82rem;font-weight:600}
 
 /* =========================================================
    ENCART TARIF NEUROFEEDBACK
@@ -481,6 +501,7 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
   .step-arrow{display:none}
   .cert-grid{grid-template-columns:repeat(3,1fr)}
   .parcours{grid-template-columns:repeat(2,1fr)}
+  .tarif-grid,.tarif-info-grid{grid-template-columns:repeat(2,1fr)}
 }
 
 /* =========================================================
@@ -509,6 +530,7 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
   .needs-grid{grid-template-columns:repeat(2,1fr)}
   .steps{grid-template-columns:1fr}
   .compare,.video-grid{grid-template-columns:1fr}
+  .tarif-grid,.tarif-info-grid{grid-template-columns:1fr}
 
   .cert-grid{grid-template-columns:repeat(2,1fr)}
 

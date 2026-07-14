@@ -8,7 +8,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="assets/img/logo-neuroalchemy.jpeg">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="NeuroAlchemy — Accompagnement &amp; Transformation Neuro-Émotionnelle">
+<meta property="og:description" content="Neurofeedback Dynamique, EMDR-DSA, Hypnose Ericksonienne et Auriculothérapie laser à Paris.">
+<meta property="og:image" content="https://neuro-alchemy-75.vercel.app/assets/og-image.png">
+<meta property="og:url" content="https://neuro-alchemy-75.vercel.app/reservation.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NeuroAlchemy — Accompagnement &amp; Transformation Neuro-Émotionnelle">
+<meta name="twitter:description" content="Accompagnement neuro-émotionnel à Paris : Neurofeedback Dynamique, EMDR-DSA, Hypnose Ericksonienne et Auriculothérapie laser.">
+<meta name="twitter:image" content="https://neuro-alchemy-75.vercel.app/assets/twitter-card.png">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -16,8 +27,8 @@
 <header class="site-header">
   <div class="container nav">
     <a href="index.html" class="brand">
-      <img src="assets/img/logo-neuroalchemy.jpeg" alt="Logo NeuroAlchemy">
-      <span>NeuroAlchemy<small>Transformation neuro-émotionnelle</small></span>
+      <img src="assets/img/logo-neuroalchemy.png" alt="Logo NeuroAlchemy">
+      <span>NeuroAlchemy<small>Accompagnement &amp; transformation neuro-émotionnelle</small></span>
     </a>
     <nav class="nav-links">
       <a href="index.html">Accueil</a>
@@ -25,6 +36,7 @@
       <a href="methodes.html">Méthodes</a>
       <a href="a-propos.html">À propos</a>
       <a href="faq.html">FAQ</a>
+      <a href="tarifs.html">Tarifs</a>
       <a href="reservation.html" class="active">Réservation</a>
       <a href="contact.html">Contact</a>
     </nav>
@@ -40,6 +52,7 @@
   <a href="methodes.html">Méthodes</a>
   <a href="a-propos.html">À propos</a>
   <a href="faq.html">FAQ</a>
+  <a href="tarifs.html">Tarifs</a>
   <a href="reservation.html">Réservation</a>
   <a href="contact.html">Contact</a>
   <a href="reservation.html" class="btn btn-rose btn-block">Réserver une séance</a>
@@ -76,14 +89,19 @@
         </div>
         <div class="pricing-card" style="margin-top:20px;padding:24px">
           <div class="pricing-head">
-            <span class="icon-circle ic-bleu" style="margin:0;width:44px;height:44px"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M2 12c2 0 2.5-7 4.5-7S9 19 11 19s2.5-9 4.5-9S18 14 20 14h2"/></svg></span>
-            <div><h3 style="font-size:1.05rem">Neurofeedback Dynamique NeurOptimal®</h3><p>Durée d’une séance : 1h30</p></div>
+            <span class="icon-circle ic-bleu" style="margin:0;width:44px;height:44px"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M6 2v6l-2 2 2 2v6M18 2v6l2 2-2 2v6"/><path d="M12 8v8"/></svg></span>
+            <div><h3 style="font-size:1.05rem">Tarifs</h3><p>Séance environ 1h30</p></div>
           </div>
           <ul class="pricing-list">
-            <li><span>Pack 12 séances</span><strong>600 €</strong></li>
-            <li><span>13ᵉ séance</span><strong>Offerte</strong></li>
-            <li><span>Séance à domicile</span><strong>Dès 90 € selon distance</strong></li>
+            <li><span>Neurofeedback NeurOptimal®</span><strong>70 €</strong></li>
+            <li><span>Pack 12 séances</span><strong>600 € — 13ᵉ offerte</strong></li>
+            <li><span>Addictions</span><strong>130 €</strong></li>
+            <li><span>Bien-être global</span><strong>80 €</strong></li>
+            <li><span>EMDR-DSA</span><strong>100 €</strong></li>
+            <li><span>Hypnose Ericksonienne</span><strong>80 €</strong></li>
           </ul>
+          <p class="pricing-note" style="text-align:left;margin-top:6px">Déplacement à domicile possible avec frais supplémentaires selon la distance.</p>
+          <p class="pricing-note" style="text-align:left;margin-top:8px"><strong>Paiement :</strong> virement Wero, PayPal ou espèces. Chèque non accepté.</p>
         </div>
       </aside>
 
@@ -151,11 +169,11 @@
               <select id="methode" name="methode" required>
                 <option value="" selected disabled>Choisissez…</option>
                 <option>Je ne sais pas encore</option>
-                <option>Neurofeedback Dynamique NeurOptimal®</option>
-                <option>EMDR-DSA</option>
-                <option>Hypnose Ericksonienne</option>
-                <option>Auriculothérapie laser</option>
-                <option>Protocole combiné</option>
+                <option>Neurofeedback Dynamique NeurOptimal® — 70 €</option>
+                <option>Addictions (tabac, sucre, cannabis, vapoteuse) — 130 €</option>
+                <option>Bien-être global (sommeil, tensions, équilibre hormonal) — 80 €</option>
+                <option>EMDR-DSA — 100 €</option>
+                <option>Hypnose Ericksonienne — 80 €</option>
               </select>
             </div>
             <div class="field full"><label for="message">Message complémentaire</label><textarea id="message" name="message" placeholder="Précisez votre besoin si vous le souhaitez…"></textarea></div>
@@ -273,8 +291,8 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <div class="footer-brand"><img src="assets/img/logo-neuroalchemy.jpeg" alt="Logo NeuroAlchemy"> NeuroAlchemy</div>
-        <p class="sig">Reprogrammation &amp; Transformation Neuro-Émotionnelle — Paris.</p>
+        <div class="footer-brand"><img src="assets/img/logo-neuroalchemy.png" alt="Logo NeuroAlchemy"> NeuroAlchemy</div>
+        <p class="sig">Accompagnement &amp; Transformation Neuro-Émotionnelle — Paris.</p>
       </div>
       <div>
         <h4>Navigation</h4>
@@ -284,6 +302,7 @@
           <li><a href="methodes.html">Méthodes</a></li>
           <li><a href="a-propos.html">À propos</a></li>
           <li><a href="faq.html">FAQ</a></li>
+          <li><a href="tarifs.html">Tarifs</a></li>
           <li><a href="reservation.html">Réservation</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
