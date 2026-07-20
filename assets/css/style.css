@@ -403,6 +403,31 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
 .mb-40{margin-bottom:40px}
 
 /* =========================================================
+   AVIS / TÉMOIGNAGES
+   ========================================================= */
+.testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start}
+.testimonial-card{background:#fff;border:var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:30px;position:relative;transition:transform .25s ease,box-shadow .25s ease}
+.testimonial-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.testimonial-card .quote{position:absolute;top:20px;right:26px;font-family:var(--ff-serif);font-size:3.4rem;line-height:1;color:var(--bleu-clair)}
+.testimonial-stars{color:var(--jaune);font-size:1.05rem;letter-spacing:2px;margin-bottom:14px}
+.testimonial-text{position:relative;overflow:hidden;max-height:11em;transition:max-height .45s ease;color:#3c4a54;font-size:.96rem}
+.testimonial-text p{margin-bottom:10px}
+.testimonial-text p:last-child{margin-bottom:0}
+.testimonial-text.expanded{max-height:200em}
+.testimonial-text::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3em;background:linear-gradient(rgba(255,255,255,0),#fff);pointer-events:none;transition:opacity .3s}
+.testimonial-text.expanded::after{opacity:0}
+.testimonial-more{margin-top:12px;color:var(--violet);font-weight:600;font-size:.9rem;padding:4px 0;display:inline-flex;align-items:center;gap:6px}
+.testimonial-more:hover{color:var(--rose)}
+.testimonial-author{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid #eef0f2}
+.testimonial-avatar{width:46px;height:46px;flex:0 0 46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--ff-serif);font-weight:700;font-size:1.2rem;color:#fff;background:linear-gradient(135deg,#8a5ec6,#7B4BB3)}
+.testimonial-card:nth-child(2) .testimonial-avatar{background:linear-gradient(135deg,#ef5bb0,#D92A9B)}
+.testimonial-card:nth-child(3) .testimonial-avatar{background:linear-gradient(135deg,#46b0d4,#2f86b0)}
+.testimonial-author strong{display:block;color:var(--bleu-profond);font-size:1rem}
+.testimonial-author span{font-size:.8rem;color:var(--gris)}
+.testimonial-cta{text-align:center;margin-top:44px}
+.testimonial-cta p{font-size:1.1rem;color:var(--bleu-profond);margin-bottom:18px;font-family:var(--ff-serif)}
+
+/* =========================================================
    PAGE TARIFS
    ========================================================= */
 .tarif-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
@@ -502,6 +527,7 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
   .cert-grid{grid-template-columns:repeat(3,1fr)}
   .parcours{grid-template-columns:repeat(2,1fr)}
   .tarif-grid,.tarif-info-grid{grid-template-columns:repeat(2,1fr)}
+  .testimonial-grid{grid-template-columns:repeat(2,1fr)}
 }
 
 /* =========================================================
@@ -531,6 +557,7 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
   .steps{grid-template-columns:1fr}
   .compare,.video-grid{grid-template-columns:1fr}
   .tarif-grid,.tarif-info-grid{grid-template-columns:1fr}
+  .testimonial-grid{grid-template-columns:1fr}
 
   .cert-grid{grid-template-columns:repeat(2,1fr)}
 

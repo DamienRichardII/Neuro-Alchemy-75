@@ -89,6 +89,18 @@
     });
   }
 
+  /* ---------- Avis : Lire la suite / Réduire ---------- */
+  document.querySelectorAll(".testimonial-more").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var card = btn.closest(".testimonial-card");
+      var txt = card && card.querySelector(".testimonial-text");
+      if (!txt) return;
+      var open = txt.classList.toggle("expanded");
+      btn.textContent = open ? "Réduire" : "Lire le témoignage complet";
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  });
+
   /* ---------- Effet léger d'apparition au scroll ---------- */
   if ("IntersectionObserver" in window) {
     var observer = new IntersectionObserver(
