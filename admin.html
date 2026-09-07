@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Espace Hassiba — NeuroAlchemy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="admin-shell">
+  <div class="container">
+
+    <!-- Écran de connexion -->
+    <div id="loginScreen" class="admin-login-card">
+      <img src="assets/img/logo-neuroalchemy.png" alt="Logo NeuroAlchemy" style="width:56px;height:56px;border-radius:50%;margin-bottom:14px">
+      <h1>Espace Hassiba</h1>
+      <p>Connectez-vous pour gérer les réservations de NeuroAlchemy.</p>
+      <form id="loginForm">
+        <input type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password" required>
+        <div class="admin-error" id="loginError"></div>
+        <button type="submit" class="btn btn-rose btn-block" id="loginBtn">Se connecter</button>
+      </form>
+    </div>
+
+    <!-- Tableau de bord -->
+    <div id="dashboard" style="display:none">
+      <div class="admin-header">
+        <div class="brand"><img src="assets/img/logo-neuroalchemy.png" alt="Logo NeuroAlchemy"> <span>Espace Hassiba</span></div>
+        <button class="btn btn-ghost" id="logoutBtn">Se déconnecter</button>
+      </div>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="bookings">Réservations</button>
+        <button class="admin-tab" data-tab="availability">Jours bloqués</button>
+        <button class="admin-tab" data-tab="account">Mon compte</button>
+      </div>
+
+      <!-- Réservations -->
+      <div class="admin-panel active" id="panel-bookings">
+        <div class="admin-filters">
+          <div class="field"><label for="filterFrom">Du</label><input type="date" id="filterFrom"></div>
+          <div class="field"><label for="filterTo">Au</label><input type="date" id="filterTo"></div>
+          <div class="field"><label for="filterStatus">Statut réservation</label>
+            <select id="filterStatus">
+              <option value="">Tous</option>
+              <option value="pending">En attente</option>
+              <option value="confirmed">Confirmée</option>
+              <option value="completed">Terminée</option>
+              <option value="cancelled">Annulée</option>
+            </select>
+          </div>
+          <button class="btn btn-ghost" id="refreshBtn">Actualiser</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Date</th><th>Créneau</th><th>Client</th><th>Contact</th><th>Méthode</th>
+                <th>Prix</th><th>Paiement</th><th>Statut</th><th>Note</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsBody"></tbody>
+          </table>
+          <div class="admin-empty" id="bookingsEmpty" style="display:none">Aucune réservation pour ces filtres.</div>
+        </div>
+      </div>
+
+      <!-- Jours bloqués -->
+      <div class="admin-panel" id="panel-availability">
+        <div class="admin-add-block">
+          <div class="field"><label for="blockDate">Date à bloquer</label><input type="date" id="blockDate"></div>
+          <div class="field" style="flex:1;min-width:200px"><label for="blockReason">Raison (optionnel)</label><input type="text" id="blockReason" placeholder="Congés, indisponibilité…"></div>
+          <button class="btn btn-rose" id="addBlockBtn">Bloquer cette date</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Date</th><th>Raison</th><th>Actions</th></tr></thead>
+            <tbody id="blockedBody"></tbody>
+          </table>
+          <div class="admin-empty" id="blockedEmpty" style="display:none">Aucun jour bloqué à venir.</div>
+        </div>
+      </div>
+
+      <!-- Mon compte -->
+      <div class="admin-panel" id="panel-account">
+        <h3 style="margin-bottom:16px">Changer mon mot de passe</h3>
+        <form id="pwdForm" style="max-width:360px">
+          <div class="field" style="margin-bottom:12px"><label for="pwdCurrent">Mot de passe actuel</label><input type="password" id="pwdCurrent" required style="width:100%;padding:10px 12px;border:1.5px solid var(--gris-clair);border-radius:8px;margin-top:4px"></div>
+          <div class="field" style="margin-bottom:12px"><label for="pwdNew">Nouveau mot de passe (10 caractères minimum)</label><input type="password" id="pwdNew" minlength="10" required style="width:100%;padding:10px 12px;border:1.5px solid var(--gris-clair);border-radius:8px;margin-top:4px"></div>
+          <div class="admin-error" id="pwdError"></div>
+          <button type="submit" class="btn btn-rose">Mettre à jour</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="admin-toast" id="toast"></div>
+
+<script src="assets/js/neuroalchemy-config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var API=(window.NEUROALCHEMY_API||{}), API_BASE=API.base||"", API_KEY=API.anonKey||"";
+  var TOKEN_KEY="neuroalchemy_admin_token";
+
+  function getToken(){ return sessionStorage.getItem(TOKEN_KEY); }
+  function setToken(t){ sessionStorage.setItem(TOKEN_KEY,t); }
+  function clearToken(){ sessionStorage.removeItem(TOKEN_KEY); }
+
+  function apiFetch(path,options){
+    options=options||{};
+    var headers=options.headers||{};
+    headers["apikey"]=API_KEY;
+    if(options.auth!==false){
+      var t=getToken();
+      if(t) headers["Authorization"]="Bearer "+t;
+    }
+    if(options.body) headers["Content-Type"]="application/json";
+    options.headers=headers;
+    return fetch(API_BASE+path,options).then(function(res){
+      return res.json().catch(function(){return {};}).then(function(data){
+        return {ok:res.ok,status:res.status,data:data};
+      });
+    });
+  }
+
+  function toast(msg){
+    var t=document.getElementById("toast");
+    t.textContent=msg; t.classList.add("show");
+    setTimeout(function(){t.classList.remove("show");},2800);
+  }
+
+  var loginScreen=document.getElementById("loginScreen"),dashboard=document.getElementById("dashboard");
+  var loginForm=document.getElementById("loginForm"),loginError=document.getElementById("loginError"),loginBtn=document.getElementById("loginBtn");
+
+  function showDashboard(){
+    loginScreen.style.display="none";
+    dashboard.style.display="block";
+    loadBookings(); loadBlockedDays();
+  }
+  function showLogin(){
+    dashboard.style.display="none";
+    loginScreen.style.display="block";
+  }
+
+  loginForm.addEventListener("submit",function(e){
+    e.preventDefault();
+    loginError.textContent="";
+    loginBtn.disabled=true; loginBtn.textContent="Connexion…";
+    var password=document.getElementById("loginPassword").value;
+    apiFetch("/admin-login",{method:"POST",auth:false,body:JSON.stringify({password:password})}).then(function(res){
+      loginBtn.disabled=false; loginBtn.textContent="Se connecter";
+      if(!res.ok||!res.data.token){
+        loginError.textContent="Mot de passe incorrect.";
+        return;
+      }
+      setToken(res.data.token);
+      document.getElementById("loginPassword").value="";
+      showDashboard();
+    }).catch(function(){
+      loginBtn.disabled=false; loginBtn.textContent="Se connecter";
+      loginError.textContent="Impossible de contacter le serveur.";
+    });
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click",function(){
+    clearToken(); showLogin();
+  });
+
+  // Onglets
+  Array.prototype.forEach.call(document.querySelectorAll(".admin-tab"),function(tab){
+    tab.addEventListener("click",function(){
+      Array.prototype.forEach.call(document.querySelectorAll(".admin-tab"),function(t){t.classList.remove("active");});
+      Array.prototype.forEach.call(document.querySelectorAll(".admin-panel"),function(p){p.classList.remove("active");});
+      tab.classList.add("active");
+      document.getElementById("panel-"+tab.getAttribute("data-tab")).classList.add("active");
+    });
+  });
+
+  var STATUS_LABELS={pending:"En attente",confirmed:"Confirmée",completed:"Terminée",cancelled:"Annulée"};
+  var PAY_LABELS={pending:"En attente",paid:"Payé",failed:"Échoué",cancelled:"Annulé",refunded:"Remboursé"};
+
+  function pill(value,labels){
+    var label=(labels&&labels[value])||value||"—";
+    return '<span class="pill pill-'+(value||"pending")+'">'+label+'</span>';
+  }
+
+  function esc(s){
+    return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function loadBookings(){
+    var params=new URLSearchParams();
+    var from=document.getElementById("filterFrom").value; if(from) params.set("from",from);
+    var to=document.getElementById("filterTo").value; if(to) params.set("to",to);
+    var status=document.getElementById("filterStatus").value; if(status) params.set("status",status);
+    apiFetch("/admin-bookings?"+params.toString(),{method:"GET"}).then(function(res){
+      var body=document.getElementById("bookingsBody"),empty=document.getElementById("bookingsEmpty");
+      body.innerHTML="";
+      if(!res.ok){
+        if(res.status===401){ clearToken(); showLogin(); }
+        return;
+      }
+      var rows=res.data.bookings||[];
+      empty.style.display=rows.length?"none":"block";
+      rows.forEach(function(b){
+        var tr=document.createElement("tr");
+        tr.innerHTML=
+          "<td>"+esc(b.booking_date)+"</td>"+
+          "<td>"+esc(b.booking_time)+"</td>"+
+          "<td>"+esc(b.customer_firstname)+" "+esc(b.customer_lastname)+"</td>"+
+          "<td>"+esc(b.customer_phone)+"<br>"+esc(b.customer_email)+"</td>"+
+          "<td>"+esc(b.service_name||"Non précisé")+"</td>"+
+          "<td>"+(b.price!=null?Number(b.price).toFixed(2)+" €":"—")+"</td>"+
+          "<td>"+pill(b.payment_status,PAY_LABELS)+(b.payment_method?"<br><small>"+esc(b.payment_method)+"</small>":"")+"</td>"+
+          "<td>"+pill(b.status,STATUS_LABELS)+"</td>"+
+          "<td style=\"max-width:220px;white-space:pre-wrap\">"+esc(b.note||"")+"</td>"+
+          "<td><div class=\"admin-row-actions\"></div></td>";
+        var actions=tr.querySelector(".admin-row-actions");
+        if(b.status!=="cancelled"){
+          addAction(actions,"Confirmer",function(){ patchBooking(b.id,{status:"confirmed"}); });
+          addAction(actions,"Annuler",function(){ if(confirm("Annuler cette réservation ?")) patchBooking(b.id,{status:"cancelled"}); });
+        }
+        if(b.payment_status!=="paid"){
+          addAction(actions,"Marquer payé (espèces)",function(){ patchBooking(b.id,{payment_status:"paid",payment_method:"especes"}); });
+        }
+        body.appendChild(tr);
+      });
+    });
+  }
+
+  function addAction(container,label,fn){
+    var btn=document.createElement("button");
+    btn.type="button"; btn.textContent=label;
+    btn.addEventListener("click",fn);
+    container.appendChild(btn);
+  }
+
+  function patchBooking(id,fields){
+    var body=Object.assign({id:id},fields);
+    apiFetch("/admin-bookings",{method:"PATCH",body:JSON.stringify(body)}).then(function(res){
+      if(res.ok){ toast("Réservation mise à jour."); loadBookings(); }
+      else { toast("Erreur lors de la mise à jour."); }
+    });
+  }
+
+  document.getElementById("refreshBtn").addEventListener("click",loadBookings);
+  document.getElementById("filterStatus").addEventListener("change",loadBookings);
+
+  function loadBlockedDays(){
+    apiFetch("/admin-availability",{method:"GET"}).then(function(res){
+      var body=document.getElementById("blockedBody"),empty=document.getElementById("blockedEmpty");
+      body.innerHTML="";
+      if(!res.ok) return;
+      var rows=res.data.blocked_days||[];
+      empty.style.display=rows.length?"none":"block";
+      rows.forEach(function(r){
+        var tr=document.createElement("tr");
+        tr.innerHTML="<td>"+esc(r.date)+"</td><td>"+esc(r.reason||"—")+"</td><td><div class=\"admin-row-actions\"></div></td>";
+        addAction(tr.querySelector(".admin-row-actions"),"Débloquer",function(){
+          apiFetch("/admin-availability?id="+encodeURIComponent(r.id),{method:"DELETE"}).then(function(res2){
+            if(res2.ok){ toast("Date débloquée."); loadBlockedDays(); }
+          });
+        });
+        body.appendChild(tr);
+      });
+    });
+  }
+
+  document.getElementById("addBlockBtn").addEventListener("click",function(){
+    var date=document.getElementById("blockDate").value;
+    if(!date){ alert("Merci de choisir une date."); return; }
+    var reason=document.getElementById("blockReason").value;
+    apiFetch("/admin-availability",{method:"POST",body:JSON.stringify({date:date,reason:reason||null})}).then(function(res){
+      if(res.ok){
+        toast("Date bloquée.");
+        document.getElementById("blockDate").value="";
+        document.getElementById("blockReason").value="";
+        loadBlockedDays();
+      } else {
+        toast("Erreur lors du blocage de la date.");
+      }
+    });
+  });
+
+  var pwdForm=document.getElementById("pwdForm"),pwdError=document.getElementById("pwdError");
+  pwdForm.addEventListener("submit",function(e){
+    e.preventDefault();
+    pwdError.textContent="";
+    var current=document.getElementById("pwdCurrent").value;
+    var next=document.getElementById("pwdNew").value;
+    apiFetch("/admin-change-password",{method:"POST",body:JSON.stringify({current_password:current,new_password:next})}).then(function(res){
+      if(res.ok){
+        toast("Mot de passe mis à jour.");
+        pwdForm.reset();
+      } else {
+        pwdError.textContent = res.data && res.data.error==="invalid_current_password"
+          ? "Mot de passe actuel incorrect."
+          : "Impossible de mettre à jour le mot de passe.";
+      }
+    });
+  });
+
+  // Session existante ?
+  if(getToken()){ showDashboard(); } else { showLogin(); }
+})();
+</script>
+</body>
+</html>

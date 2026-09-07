@@ -7,3 +7,8 @@ desktop.ini
 # Dépendances / build (au cas où)
 node_modules/
 .vercel/
+
+# Secrets (ne jamais committer de vraies clés)
+.env
+.env.local
+.env.*.local

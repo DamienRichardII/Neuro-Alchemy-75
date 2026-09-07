@@ -311,6 +311,10 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
 }
 .form-success.show{display:block;animation:fade .4s ease}
 .form-success strong{display:block;font-family:var(--ff-serif);font-size:1.2rem;margin-bottom:6px;color:var(--bleu-profond)}
+.form-success.is-pending{background:linear-gradient(135deg,var(--bleu-clair),#f3fafd);border-color:#bfe0ee;color:var(--bleu-profond)}
+.form-success.is-failed{background:linear-gradient(135deg,#fbe3ea,#fdf2f5);border-color:#f3c4d4;color:var(--rose-fonce)}
+.slot-btn[disabled]{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+.cal-day.full{opacity:.35;text-decoration:line-through;cursor:not-allowed}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* =========================================================
@@ -590,4 +594,47 @@ table.protocoles td:first-child{font-weight:600;color:var(--bleu-profond)}
 @media (max-width:380px){
   .needs-grid,.cert-grid{grid-template-columns:1fr}
   .badge{font-size:.8rem}
+}
+
+/* =========================================================
+   PAGE ADMIN (espace privé Hassiba)
+   ========================================================= */
+.admin-shell{min-height:100vh;background:linear-gradient(180deg,#ffffff 0%,var(--bleu-clair) 100%);padding:40px 0 80px}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:14px}
+.admin-header .brand img{width:40px;height:40px;border-radius:50%}
+.admin-login-card{max-width:380px;margin:60px auto;background:#fff;border:var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 32px;text-align:center}
+.admin-login-card h1{font-size:1.4rem;margin-bottom:6px}
+.admin-login-card p{color:var(--gris);font-size:.9rem;margin-bottom:22px}
+.admin-login-card input{width:100%;padding:12px 14px;border:1.5px solid var(--gris-clair);border-radius:var(--radius-sm);font-size:1rem;margin-bottom:14px}
+.admin-error{color:var(--rose-fonce);font-size:.85rem;min-height:1.2em;margin-bottom:8px}
+.admin-tabs{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.admin-tab{padding:10px 18px;border-radius:999px;border:1.5px solid var(--gris-clair);background:#fff;font-weight:600;font-size:.9rem;color:var(--gris);cursor:pointer}
+.admin-tab.active{background:var(--bleu-profond);border-color:var(--bleu-profond);color:#fff}
+.admin-panel{display:none;background:#fff;border:var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:24px}
+.admin-panel.active{display:block}
+.admin-filters{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;align-items:flex-end}
+.admin-filters .field{display:flex;flex-direction:column;gap:4px;font-size:.85rem}
+.admin-filters input,.admin-filters select{padding:8px 10px;border:1.5px solid var(--gris-clair);border-radius:8px;font-size:.9rem}
+.admin-table-wrap{overflow-x:auto}
+table.admin-table{width:100%;border-collapse:collapse;font-size:.85rem}
+table.admin-table th{text-align:left;padding:10px 12px;border-bottom:2px solid var(--gris-clair);color:var(--bleu-profond);white-space:nowrap}
+table.admin-table td{padding:10px 12px;border-bottom:1px solid var(--gris-clair);vertical-align:top}
+table.admin-table tr:hover{background:var(--creme)}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:600}
+.pill-pending{background:#fdf1d9;color:#8a6417}
+.pill-paid{background:#e0f3e2;color:#2c6a35}
+.pill-failed{background:#fbe3ea;color:var(--rose-fonce)}
+.pill-cancelled{background:var(--gris-clair);color:var(--gris)}
+.pill-confirmed{background:var(--bleu-clair);color:var(--bleu-profond)}
+.pill-completed{background:#e6e0f4;color:var(--violet)}
+.admin-row-actions{display:flex;gap:6px;flex-wrap:wrap}
+.admin-row-actions button{padding:5px 10px;font-size:.78rem;border-radius:7px;border:1.5px solid var(--gris-clair);background:#fff;cursor:pointer}
+.admin-row-actions button:hover{border-color:var(--bleu-profond)}
+.admin-add-block{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:flex-end}
+.admin-empty{color:var(--gris);font-style:italic;padding:20px 0;text-align:center}
+.admin-toast{position:fixed;bottom:20px;right:20px;background:var(--bleu-profond);color:#fff;padding:12px 18px;border-radius:10px;box-shadow:var(--shadow);font-size:.9rem;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none;z-index:50}
+.admin-toast.show{opacity:1;transform:none}
+@media (max-width:768px){
+  .admin-filters{flex-direction:column;align-items:stretch}
+  .admin-tabs{justify-content:center}
 }

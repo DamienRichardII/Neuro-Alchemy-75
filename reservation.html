@@ -80,7 +80,7 @@
         <div class="infos-card">
           <h3>Informations pratiques</h3>
           <ul class="infos-list">
-            <li><span class="lbl">Lieu</span><span class="val">Paris</span></li>
+            <li><span class="lbl">Lieu</span><span class="val">Paris (75) et proche banlieue</span></li>
             <li><span class="lbl">Durée d’une séance</span><span class="val">1h30</span></li>
             <li><span class="lbl">Jours disponibles</span><span class="val">Samedi &amp; dimanche</span></li>
             <li><span class="lbl">En semaine</span><span class="val">Fermé</span></li>
@@ -94,19 +94,20 @@
           </div>
           <ul class="pricing-list">
             <li><span>Neurofeedback NeurOptimal®</span><strong>70 €</strong></li>
-            <li><span>Pack 12 séances</span><strong>600 € — 13ᵉ offerte</strong></li>
+            <li><span>Pack 12 séances</span><strong>600 €</strong></li>
             <li><span>Addictions</span><strong>130 €</strong></li>
             <li><span>Bien-être global</span><strong>80 €</strong></li>
             <li><span>EMDR-DSA</span><strong>100 €</strong></li>
             <li><span>Hypnose Ericksonienne</span><strong>80 €</strong></li>
           </ul>
-          <p class="pricing-note" style="text-align:left;margin-top:6px">Déplacement à domicile possible avec frais supplémentaires selon la distance.</p>
+          <p class="pricing-note" style="text-align:left;margin-top:6px">Déplacement à domicile possible à Paris (75) et en proche banlieue uniquement, avec frais supplémentaires selon la distance.</p>
           <p class="pricing-note" style="text-align:left;margin-top:8px"><strong>Paiement :</strong> virement Wero, PayPal ou espèces. Chèque non accepté.</p>
         </div>
       </aside>
 
       <!-- Colonne calendrier + formulaire -->
       <div class="reservation-card" data-reveal>
+        <div class="form-success" id="paymentReturnBanner" style="margin-bottom:20px"></div>
         <form id="resaForm" novalidate>
 
           <!-- Calendrier -->
@@ -168,12 +169,12 @@
             <div class="field"><label for="methode">Méthode souhaitée *</label>
               <select id="methode" name="methode" required>
                 <option value="" selected disabled>Choisissez…</option>
-                <option>Je ne sais pas encore</option>
-                <option>Neurofeedback Dynamique NeurOptimal® — 70 €</option>
-                <option>Addictions (tabac, sucre, cannabis, vapoteuse) — 130 €</option>
-                <option>Bien-être global (sommeil, tensions, équilibre hormonal) — 80 €</option>
-                <option>EMDR-DSA — 100 €</option>
-                <option>Hypnose Ericksonienne — 80 €</option>
+                <option value="" data-code="">Je ne sais pas encore</option>
+                <option value="neurofeedback" data-code="neurofeedback">Neurofeedback Dynamique NeurOptimal® — 70 €</option>
+                <option value="addictions" data-code="addictions">Addictions (tabac, sucre, cannabis, vapoteuse) — 130 €</option>
+                <option value="bienetre_global" data-code="bienetre_global">Bien-être global (sommeil, tensions, équilibre hormonal) — 80 €</option>
+                <option value="emdr_dsa" data-code="emdr_dsa">EMDR-DSA — 100 €</option>
+                <option value="hypnose" data-code="hypnose">Hypnose Ericksonienne — 80 €</option>
               </select>
             </div>
             <div class="field full"><label for="message">Message complémentaire</label><textarea id="message" name="message" placeholder="Précisez votre besoin si vous le souhaitez…"></textarea></div>
@@ -189,7 +190,7 @@
             <label><input type="checkbox" name="c4" required> J’autorise NeuroAlchemy à me recontacter.</label>
           </div>
 
-          <button type="submit" class="btn btn-rose btn-block">Réserver une séance</button>
+          <button type="submit" class="btn btn-rose btn-block" id="resaSubmitBtn">Réserver une séance</button>
 
           <div class="form-success" id="formSuccess">
             <strong>Demande bien préparée ✓</strong>
@@ -201,7 +202,10 @@
   </div>
 </section>
 
-<!-- Script calendrier (frontend uniquement) -->
+<!-- Configuration backend (clé publique uniquement) -->
+<script src="assets/js/neuroalchemy-config.js"></script>
+
+<!-- Script calendrier + réservation réelle (Supabase Edge Functions) -->
 <script>
 (function(){
   "use strict";
@@ -211,12 +215,49 @@
   var sumDate=document.getElementById("sumDate"),sumSlot=document.getElementById("sumSlot");
   var dateInput=document.getElementById("dateInput"),creneauInput=document.getElementById("creneauInput");
   var form=document.getElementById("resaForm"),success=document.getElementById("formSuccess");
+  var submitBtn=document.getElementById("resaSubmitBtn");
+  var returnBanner=document.getElementById("paymentReturnBanner");
   if(!grid) return;
+
+  var API=(window.NEUROALCHEMY_API||{}),
+      API_BASE=API.base||"",
+      API_KEY=API.anonKey||"";
+
+  function apiFetch(path,options){
+    options=options||{};
+    var headers=options.headers||{};
+    headers["apikey"]=API_KEY;
+    if(options.body) headers["Content-Type"]="application/json";
+    options.headers=headers;
+    return fetch(API_BASE+path,options).then(function(res){
+      return res.json().catch(function(){return {};}).then(function(data){
+        return {ok:res.ok,status:res.status,data:data};
+      });
+    });
+  }
+
+  function isoDate(d){
+    var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+    return y+"-"+m+"-"+day;
+  }
+
   var MONTHS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
   var DOW=["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
   var today=new Date(); today.setHours(0,0,0,0);
   var view=new Date(today.getFullYear(),today.getMonth(),1);
   var selectedDate=null, selectedSlot=null;
+  var availabilityByDate={}; // { "2026-09-12": {taken:[...], full:false} }
+  var availabilityLoaded=false;
+
+  function loadAvailability(){
+    return apiFetch("/get-availability?weeks=26",{method:"GET"}).then(function(res){
+      availabilityByDate={};
+      if(res.ok && res.data && res.data.days){
+        res.data.days.forEach(function(d){ availabilityByDate[d.date]={taken:d.taken||[],full:!!d.full}; });
+      }
+      availabilityLoaded=true;
+    }).catch(function(){ availabilityLoaded=true; });
+  }
 
   function render(){
     grid.innerHTML="";
@@ -225,30 +266,41 @@
     var first=new Date(view.getFullYear(),view.getMonth(),1);
     var startOffset=(first.getDay()+6)%7; // lundi=0
     for(var i=0;i<startOffset;i++){var e=document.createElement("div");e.className="cal-day empty";grid.appendChild(e);}
-    var days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
-    for(var d=1;d<=days;d++){
+    var daysInMonth=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
+    for(var d=1;d<=daysInMonth;d++){
       var cell=new Date(view.getFullYear(),view.getMonth(),d);
+      var iso=isoDate(cell);
       var el=document.createElement("button");
       el.type="button"; el.textContent=d; el.className="cal-day";
       var wd=cell.getDay(); // 0 dim, 6 sam
       var isWeekend=(wd===0||wd===6);
       var isPast=cell<today;
-      if(isWeekend && !isPast){
+      var dayInfo=availabilityByDate[iso];
+      var isOpen=isWeekend && !isPast && (!availabilityLoaded || !!dayInfo);
+      var isFull=!!(dayInfo && dayInfo.full);
+      if(isOpen && !isFull){
         el.classList.add("available");
-        (function(cell){
+        (function(cell,iso){
           el.addEventListener("click",function(){
             selectedDate=cell; selectedSlot=null;
             creneauInput.value=""; sumSlot.textContent="—";
             Array.prototype.forEach.call(grid.querySelectorAll(".cal-day"),function(c){c.classList.remove("selected");});
             el.classList.add("selected");
-            dateInput.value=cell.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-            sumDate.textContent=dateInput.value;
+            dateInput.value=iso;
+            sumDate.textContent=cell.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
             slotsWrap.hidden=false;
-            Array.prototype.forEach.call(slots.querySelectorAll(".slot-btn"),function(b){b.classList.remove("selected");});
+            var taken=(availabilityByDate[iso]&&availabilityByDate[iso].taken)||[];
+            Array.prototype.forEach.call(slots.querySelectorAll(".slot-btn"),function(b){
+              b.classList.remove("selected");
+              var isTaken=taken.indexOf(b.textContent)!==-1;
+              b.disabled=isTaken;
+              b.title=isTaken?"Créneau déjà réservé":"";
+            });
           });
-        })(cell);
+        })(cell,iso);
       } else {
         el.classList.add("disabled"); el.disabled=true;
+        if(isFull) el.classList.add("full");
       }
       grid.appendChild(el);
     }
@@ -261,11 +313,25 @@
   next.addEventListener("click",function(){view=new Date(view.getFullYear(),view.getMonth()+1,1);render();});
 
   slots.addEventListener("click",function(e){
-    var b=e.target.closest(".slot-btn"); if(!b) return;
+    var b=e.target.closest(".slot-btn"); if(!b||b.disabled) return;
     Array.prototype.forEach.call(slots.querySelectorAll(".slot-btn"),function(x){x.classList.remove("selected");});
     b.classList.add("selected"); selectedSlot=b.textContent;
     creneauInput.value=b.textContent; sumSlot.textContent=b.textContent;
   });
+
+  function setLoading(isLoading){
+    if(!submitBtn) return;
+    submitBtn.disabled=isLoading;
+    submitBtn.textContent=isLoading?"Envoi en cours…":"Réserver une séance";
+  }
+
+  function showSuccess(html,variant){
+    success.classList.remove("is-pending","is-failed");
+    if(variant) success.classList.add(variant);
+    success.innerHTML=html;
+    success.classList.add("show");
+    success.scrollIntoView({behavior:"smooth",block:"center"});
+  }
 
   form.addEventListener("submit",function(e){
     e.preventDefault();
@@ -274,16 +340,107 @@
     var checks=form.querySelectorAll('input[type="checkbox"][required]'), ok=true;
     checks.forEach(function(c){if(!c.checked)ok=false;});
     if(!form.checkValidity()||!ok){form.reportValidity();if(!ok)alert("Merci de cocher les cases de consentement obligatoires.");return;}
-    success.classList.add("show");
-    success.scrollIntoView({behavior:"smooth",block:"center"});
-    // TODO backend : bloquer réellement le créneau après confirmation.
+
+    var methodeSelect=document.getElementById("methode");
+    var serviceCode=methodeSelect.selectedOptions[0]?methodeSelect.selectedOptions[0].getAttribute("data-code"):"";
+
+    var payload={
+      service_code:serviceCode||undefined,
+      firstname:document.getElementById("prenom").value,
+      lastname:document.getElementById("nom").value,
+      email:document.getElementById("email").value,
+      phone:document.getElementById("tel").value,
+      need:document.getElementById("besoin").value,
+      message:document.getElementById("message").value,
+      booking_date:dateInput.value,
+      booking_time:creneauInput.value,
+      consent_no_medical:true
+    };
+
+    setLoading(true);
+    apiFetch("/create-booking",{method:"POST",body:JSON.stringify(payload)}).then(function(res){
+      if(!res.ok){
+        setLoading(false);
+        if(res.data && res.data.error==="slot_taken"){
+          alert("Ce créneau vient d'être réservé par quelqu'un d'autre. Merci d'en choisir un autre.");
+          loadAvailability().then(render);
+        } else if(res.data && res.data.error==="date_blocked"){
+          alert("Cette date n'est plus disponible. Merci de choisir une autre date.");
+          loadAvailability().then(render);
+        } else {
+          alert("Une erreur est survenue lors de la préparation de votre réservation. Merci de réessayer ou de contacter NeuroAlchemy directement.");
+        }
+        return;
+      }
+
+      var bookingId=res.data.booking_id;
+      var paymentRequired=res.data.payment_required;
+
+      if(!paymentRequired){
+        setLoading(false);
+        showSuccess("<strong>Demande bien préparée ✓</strong>Votre demande de réservation a bien été préparée. NeuroAlchemy vous recontactera pour confirmer votre créneau et l'accompagnement le plus adapté.");
+        resetForm();
+        return;
+      }
+
+      apiFetch("/create-sumup-checkout",{method:"POST",body:JSON.stringify({booking_id:bookingId})}).then(function(payRes){
+        setLoading(false);
+        if(payRes.ok && payRes.data && payRes.data.configured && payRes.data.hosted_checkout_url){
+          window.location.href=payRes.data.hosted_checkout_url;
+          return;
+        }
+        var msg=(payRes.data && payRes.data.message) || "Hassiba vous confirmera votre créneau et les modalités de règlement (Wero, PayPal ou espèces).";
+        showSuccess("<strong>Demande bien préparée ✓</strong>Votre réservation est enregistrée. "+msg);
+        resetForm();
+      }).catch(function(){
+        setLoading(false);
+        showSuccess("<strong>Demande bien préparée ✓</strong>Votre réservation est enregistrée. Hassiba vous confirmera votre créneau et les modalités de règlement.");
+        resetForm();
+      });
+    }).catch(function(){
+      setLoading(false);
+      alert("Impossible de contacter le serveur de réservation pour le moment. Merci de réessayer dans un instant.");
+    });
+  });
+
+  function resetForm(){
     form.reset();
     selectedDate=null;selectedSlot=null;dateInput.value="";creneauInput.value="";
     sumDate.textContent="—";sumSlot.textContent="—";slotsWrap.hidden=true;
     Array.prototype.forEach.call(grid.querySelectorAll(".cal-day"),function(c){c.classList.remove("selected");});
-  });
+    loadAvailability().then(render);
+  }
 
-  render();
+  function checkReturnFromPayment(){
+    var params=new URLSearchParams(window.location.search);
+    var bookingId=params.get("booking");
+    if(!bookingId||!returnBanner) return;
+    returnBanner.innerHTML="<strong>Vérification du paiement…</strong>Merci de patienter un instant.";
+    returnBanner.classList.add("show","is-pending");
+    apiFetch("/check-payment-status?booking_id="+encodeURIComponent(bookingId),{method:"GET"}).then(function(res){
+      if(!res.ok||!res.data){
+        returnBanner.innerHTML="<strong>Statut indisponible</strong>Impossible de vérifier votre paiement pour le moment. Hassiba vous confirmera votre créneau directement.";
+        returnBanner.classList.remove("is-pending"); returnBanner.classList.add("is-failed");
+        return;
+      }
+      if(res.data.payment_status==="paid"){
+        returnBanner.innerHTML="<strong>Paiement confirmé ✓</strong>Votre séance du "+res.data.booking_date+" ("+res.data.booking_time+") est confirmée. Merci !";
+        returnBanner.classList.remove("is-pending","is-failed");
+      } else if(res.data.payment_status==="failed"){
+        returnBanner.innerHTML="<strong>Paiement non abouti</strong>Le paiement n'a pas pu être finalisé. Vous pouvez réessayer ou contacter NeuroAlchemy pour régler autrement (Wero, PayPal, espèces).";
+        returnBanner.classList.remove("is-pending"); returnBanner.classList.add("is-failed");
+      } else {
+        returnBanner.innerHTML="<strong>Paiement en cours de vérification</strong>Votre réservation est enregistrée. Hassiba vous confirmera votre créneau dès réception du paiement.";
+      }
+      returnBanner.scrollIntoView({behavior:"smooth",block:"center"});
+    }).catch(function(){
+      returnBanner.innerHTML="<strong>Statut indisponible</strong>Impossible de vérifier votre paiement pour le moment. Hassiba vous confirmera votre créneau directement.";
+      returnBanner.classList.remove("is-pending"); returnBanner.classList.add("is-failed");
+    });
+  }
+
+  loadAvailability().then(render);
+  checkReturnFromPayment();
 })();
 </script>
 
@@ -310,7 +467,7 @@
       <div>
         <h4>Infos pratiques</h4>
         <ul class="footer-info">
-          <li>Paris</li>
+          <li>Paris (75) et proche banlieue</li>
           <li>Samedi &amp; dimanche : 9h à 20h30</li>
           <li>Réservation sur créneau</li>
         </ul>
