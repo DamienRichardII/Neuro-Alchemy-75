@@ -89,17 +89,59 @@
     });
   }
 
-  /* ---------- Avis : Lire la suite / Réduire ---------- */
-  document.querySelectorAll(".testimonial-more").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var card = btn.closest(".testimonial-card");
-      var txt = card && card.querySelector(".testimonial-text");
-      if (!txt) return;
-      var open = txt.classList.toggle("expanded");
-      btn.textContent = open ? "Réduire" : "Lire le témoignage complet";
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
+  /* ---------- Avis : bande défilante continue ---------- */
+  var testimonialTrack = document.getElementById("testimonialTrack");
+  if (testimonialTrack) {
+    // Duplique une fois le contenu pour un défilement en boucle sans coupure.
+    // Fait avant l'effet de révélation au scroll : les clones sont retirés
+    // du système data-reveal pour rester visibles en permanence.
+    var originalCards = Array.prototype.slice.call(testimonialTrack.children);
+    originalCards.forEach(function (card) {
+      var clone = card.cloneNode(true);
+      clone.removeAttribute("data-reveal");
+      clone.setAttribute("aria-hidden", "true");
+      clone.querySelectorAll("[id]").forEach(function (el) { el.removeAttribute("id"); });
+      clone.querySelectorAll("button, a").forEach(function (el) { el.setAttribute("tabindex", "-1"); });
+      testimonialTrack.appendChild(clone);
     });
-  });
+  }
+
+  /* ---------- Avis : modal "Lire le témoignage complet" ---------- */
+  var testimonialModal = document.getElementById("testimonialModal");
+  if (testimonialModal) {
+    var modalStars = document.getElementById("testimonialModalStars");
+    var modalText = document.getElementById("testimonialModalText");
+    var modalAuthor = document.getElementById("testimonialModalAuthor");
+
+    function openTestimonialModal(card) {
+      var stars = card.querySelector(".testimonial-stars");
+      var text = card.querySelector(".testimonial-text");
+      var author = card.querySelector(".testimonial-author");
+      modalStars.innerHTML = stars ? stars.innerHTML : "";
+      modalText.innerHTML = text ? text.innerHTML : "";
+      modalAuthor.innerHTML = author ? author.innerHTML : "";
+      testimonialModal.classList.add("show");
+      testimonialModal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+    function closeTestimonialModal() {
+      testimonialModal.classList.remove("show");
+      testimonialModal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+    document.addEventListener("click", function (e) {
+      var moreBtn = e.target.closest(".testimonial-more");
+      if (moreBtn) {
+        var card = moreBtn.closest(".testimonial-card");
+        if (card) openTestimonialModal(card);
+        return;
+      }
+      if (e.target.closest("[data-modal-close]")) closeTestimonialModal();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeTestimonialModal();
+    });
+  }
 
   /* ---------- Effet léger d'apparition au scroll ---------- */
   if ("IntersectionObserver" in window) {
